@@ -11,10 +11,17 @@ public class App {
     public static void main(final String[] args) {
         port(getHerokuAssignedPort());
 
-        Map<String, Integer> users = new HashMap<>();
-
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location("/public"); // Static files
+
+        Map<String, Integer> users = new HashMap<>();
+
+        get("/",(req, res) -> {
+            res.redirect("/hello");
+            return null;
+        });
+
+
         get("/greet", (req, res) -> "Hello!");
         get("/greet/:username", (req, res) -> "Hello World");
         get("/greet/:username/language/:language", (req, res) -> "Hello World");
