@@ -61,6 +61,7 @@ public class App {
 
                 case "TshiVenda":
                     greeting=  "Ndaa, " + username;
+                    break;
 
                 default:
                     break;
