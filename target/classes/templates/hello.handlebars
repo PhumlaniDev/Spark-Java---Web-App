@@ -18,13 +18,15 @@
     <p>My First Web App - Greet App!</p>
 </div>
 
-    <div class="container">
-        <div class ="row">
+<div class="container">
+    <form action="/hello" method="post">
+        <div class="row">
+
             <div class="col-sm-4">
-                <form action="/hello" method="post" >
-                    <input type="text" name="username" placeholder="Enter a number">
-                    <input type="submit" >
-                </form>
+
+                <input type="text" name="username" placeholder="Enter a number">
+                <input type="submit">
+
             </div>
 
             <div class="col-sm-4">
@@ -58,7 +60,8 @@
                 TshiVenda
             </label>
         </div>
-    </div>
+    </form>
+</div>
 
 </body>
 </html>

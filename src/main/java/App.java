@@ -38,22 +38,29 @@ public class App {
             Map<String, Object> map2 = new HashMap<>();
 
             // create the greeting message
-            String lang = "";
-            if (lang.equals("IsiXhosa")){
-               String IsiXhosa = "Mholo, " + request.queryParams("language");
-               lang = IsiXhosa;
+            String lang = request.queryParams("language");
+
+            String username = request.queryParams("username");
+
+            String greeting = "";
+            switch (lang){
+                case "IsiXhosa":
+                    greeting =  "Mholo, " + username;
+                    break;
+
+                case "English":
+                    greeting =  "Hello, " + username;
+                    break;
+
+                case "TshiVenda":
+                    greeting=  "Ndaa, " + username;
+
+                default:
+                    break;
             }
 
-            else if (lang.equals("English")){
-                String English = "Hello, " + request.queryParams("language");
-                lang = English;
-            }
-            else {
-                String TshiVenda = "Ndaa, " + request.queryParams("language");
-                lang = TshiVenda;
-            }
 
-            final String username = "Hello, "+ request.queryParams("username");
+//            final String username = lang + username1;
 
 
             if (users.containsKey(username)){
@@ -65,7 +72,7 @@ public class App {
             }
 
             // put it in the map which is passed to the template - the value will be merged into the template
-            map2.put("greeting", username);
+            map2.put("greeting", greeting);
             map2.put("users", users);
 
             return new HandlebarsTemplateEngine()
