@@ -15,14 +15,15 @@
         <input type="submit" >
     </form>
 
-    {{greeting}}
+    <h3>{{greeting}}</h3>
+
     <div>
-    <ul>
-        {{#each users}}
-        <li>{{this}}</li>
-        {{/each}}
-     </ul>
-</div>
+        <ul>
+            {{#each users}}
+                <li>{{@key}} Greeted {{this}} time(s)</li>
+            {{/each}}
+        </ul>
+    </div>
 
 </body>
 </html>

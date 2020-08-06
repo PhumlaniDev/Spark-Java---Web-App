@@ -10,6 +10,8 @@ public class App {
 
     public static void main(final String[] args) {
 
+        Map<String, Integer> users = new HashMap<>();
+
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location("/public"); // Static files
         get("/greet", (req, res) -> "Hello!");
@@ -32,13 +34,23 @@ public class App {
 
         post("/hello", (request, response) -> {
             // Create something
-            final Map<String, Object> map2 = new HashMap<>();
+            Map<String, Object> map2 = new HashMap<>();
 
             // create the greeting message
-            final String greeting = "Hello, " + request.queryParams("username");
+            final String username = "Hello, " + request.queryParams("username");
+
+            String greeting = "Hello " + username;
+
+            if (users.containsKey(username)){
+                users.put(username, users.get(username) +1);
+            }
+
+            else{
+                users.put(username,1);}
 
             // put it in the map which is passed to the template - the value will be merged into the template
             map2.put("greeting", greeting);
+            map2.put("users", users);
 
             return new HandlebarsTemplateEngine()
                     .render(new ModelAndView(map2, "hello.handlebars"));
