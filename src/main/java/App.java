@@ -9,6 +9,7 @@ import static spark.Spark.*;
 public class App {
 
     public static void main(final String[] args) {
+        port(getHerokuAssignedPort());
 
         Map<String, Integer> users = new HashMap<>();
 
@@ -56,6 +57,14 @@ public class App {
                     .render(new ModelAndView(map2, "hello.handlebars"));
         });
 
+    }
+
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 
 }
