@@ -1,7 +1,10 @@
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -11,16 +14,32 @@ public class App {
     public static void main(final String[] args) {
         port(getHerokuAssignedPort());
 
+        String dbDiskURL = "jdbc:h2:file:./greetdb";
+        // String dbMemoryURL = "jdbc:h2:mem:greetdb";
+
+        Jdbi jdbi = Jdbi.create(dbDiskURL, "sa", "");
+
+        // get a handle to the database
+        Handle handle = jdbi.open();
+
+        // create the table if needed
+        handle.execute("create table if not exists greet ( id integer identity, name varchar(50), counter int )");
+
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location("/public"); // Static files
 
-        Map<String, Integer> users = new HashMap<>();
+//        Map<String, Integer> users = new HashMap<>();
 
-        get("/",(req, res) -> {
+        // get all the usernames from the database
+        List<String> users = handle.createQuery("select name from greet")
+                .mapTo(String.class)
+                .list();
+
+
+        get("/", (req, res) -> {
             res.redirect("/hello");
             return null;
         });
-
 
         get("/greet", (req, res) -> "Hello!");
         get("/greet/:username", (req, res) -> "Hello World");
@@ -31,9 +50,6 @@ public class App {
             return "Hello: " + request.params("username");
         });
 
-        final Map<String, String> map = new HashMap<String,String>();
-        map.put("name", "Sam");
-
         get("/hello", (request, response) -> {
             // Show something
             final Map<String, Object> map1 = new HashMap<>();
@@ -41,6 +57,9 @@ public class App {
         });
 
         post("/hello", (request, response) -> {
+
+            // add a user to the database
+
             // Create something
             Map<String, Object> map2 = new HashMap<>();
 
@@ -50,38 +69,33 @@ public class App {
             String username = request.queryParams("username");
 
             String greeting = "";
-            switch (lang){
+            switch (lang) {
                 case "IsiXhosa":
-                    greeting =  "Mholo, " + username;
+                    greeting = "Mholo, " + username;
                     break;
 
                 case "English":
-                    greeting =  "Hello, " + username;
+                    greeting = "Hello, " + username;
                     break;
 
                 case "TshiVenda":
-                    greeting=  "Ndaa, " + username;
+                    greeting = "Ndaa, " + username;
                     break;
 
                 default:
                     break;
             }
 
-
-//            final String username = lang + username1;
-
-
-            if (users.containsKey(username)){
-                users.put(username, users.get(username) + 1);
+            if (users.contains(username)) {
+                users.add(username);
+            } else {
+                users.add(1, username);
             }
-
-            else{
-                users.put(username,1);
-            }
-
+            
             // put it in the map which is passed to the template - the value will be merged into the template
             map2.put("greeting", greeting);
-            map2.put("users", users);
+            map2.put("users",users);
+            map2.put("counter", users.size());
 
             return new HandlebarsTemplateEngine()
                     .render(new ModelAndView(map2, "hello.handlebars"));
