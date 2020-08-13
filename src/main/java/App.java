@@ -28,8 +28,6 @@ public class App {
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location("/public"); // Static files
 
-//        Map<String, Integer> users = new HashMap<>();
-
         // get all the usernames from the database
         List<String> users = handle.createQuery("select name from greet")
                 .mapTo(String.class)
@@ -53,12 +51,12 @@ public class App {
         get("/hello", (request, response) -> {
             // Show something
             final Map<String, Object> map1 = new HashMap<>();
+            map1.put("users", users);
+            map1.put("count", users.size());
             return new HandlebarsTemplateEngine().render(new ModelAndView(map1, "hello.handlebars"));
         });
 
         post("/hello", (request, response) -> {
-
-            // add a user to the database
 
             // Create something
             Map<String, Object> map2 = new HashMap<>();
@@ -67,34 +65,37 @@ public class App {
             String lang = request.queryParams("language");
 
             String username = request.queryParams("username");
-
             String greeting = "";
-            switch (lang) {
-                case "IsiXhosa":
-                    greeting = "Mholo, " + username;
-                    break;
 
-                case "English":
-                    greeting = "Hello, " + username;
-                    break;
+            if (!lang.isEmpty()){
+                switch (lang) {
+                    case "IsiXhosa":
+                        greeting = "Mholo, " + username;
+                        break;
 
-                case "TshiVenda":
-                    greeting = "Ndaa, " + username;
-                    break;
+                    case "English":
+                        greeting = "Hello, " + username;
+                        break;
 
-                default:
-                    break;
+                    case "TshiVenda":
+                        greeting = "Ndaa, " + username;
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
-            if (users.contains(username)) {
-                users.add(username);
-            } else {
-                users.add(1, username);
+            if (!users.contains(username)){
+                users.add(0,username);
             }
-            
+            else {
+                users.get(1);
+            }
+
             // put it in the map which is passed to the template - the value will be merged into the template
             map2.put("greeting", greeting);
-            map2.put("users",users);
+            map2.put("users", users);
             map2.put("counter", users.size());
 
             return new HandlebarsTemplateEngine()

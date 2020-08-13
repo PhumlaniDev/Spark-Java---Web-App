@@ -18,16 +18,12 @@
     <h1>Greet App</h1>
     <p>My First Web App - Greet App!</p>
 </div>
-
 <div class="container">
     <form action="/hello" method="post">
         <div class="row">
-
             <div class="col-sm-4">
-
                 <input type="text" name="username" placeholder="Enter a number">
                 <input type="submit">
-
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="language" value="IsiXhosa">
                     <label class="form-check-label" for="exampleRadios1">
@@ -46,24 +42,20 @@
                         TshiVenda
                     </label>
                 </div>
-
             </div>
-
             <div class="col-sm-4">
                 <h3>{{greeting}}</h3>
             </div>
-
             <div class="col-sm-4">
                 <ul>
+                    <h3>{{counter}}</h3>
                     {{#each users}}
-                        <li>{{@size}} Greeted {{this}} time(s)</li>
+                        <li>{{this}} has been greeted</li>
                     {{/each}}
                 </ul>
             </div>
         </div>
-
     </form>
 </div>
-
 </body>
 </html>
