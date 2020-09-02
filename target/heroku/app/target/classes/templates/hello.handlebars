@@ -10,6 +10,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <title>Document</title>
+    <style>
+        #list{
+        height: 350px;
+        overflow-y: scroll;
+        }
+
+    </style>
 
 </head>
 <body>
@@ -17,51 +24,46 @@
     <h1>Greet App</h1>
     <p>My First Web App - Greet App!</p>
 </div>
-
 <div class="container">
     <form action="/hello" method="post">
         <div class="row">
-
             <div class="col-sm-4">
-
-                <input type="text" name="username" placeholder="Enter a number">
+                <input type="text" name="name" placeholder="Enter a name">
                 <input type="submit">
-
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="language" value="IsiXhosa">
+                    <label class="form-check-label" for="exampleRadios1">
+                        IsiXhosa
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="language" value="English">
+                    <label class="form-check-label" for="exampleRadios2">
+                        English
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="language" value="TshiVenda">
+                    <label class="form-check-label" for="exampleRadios3">
+                        TshiVenda
+                    </label>
+                </div>
             </div>
-
             <div class="col-sm-4">
                 <h3>{{greeting}}</h3>
             </div>
-
             <div class="col-sm-4">
-                <ul>
-                    {{#each users}}
-                        <li>{{@key}} Greeted {{this}} time(s)</li>
-                    {{/each}}
-                </ul>
+                <h3>{{counter}}</h3>
+                <div id="list">
+                    <ul>
+                        {{#each users}}
+                            <li>{{this}} has been greeted</li>
+                        {{/each}}
+                    </ul>
+                </div>
             </div>
-        </div>
-
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="language" value="IsiXhosa">
-            <label class="form-check-label" for="exampleRadios1">
-                IsiXhosa
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="language" value="English">
-            <label class="form-check-label" for="exampleRadios2">
-                English
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="language" value="TshiVenda">
-            <label class="form-check-label" for="exampleRadios3">
-                TshiVenda
-            </label>
         </div>
     </form>
 </div>
-
 </body>
 </html>

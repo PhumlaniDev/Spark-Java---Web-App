@@ -1,1 +1,5 @@
+model/modelClass.class
+greeter/Greetings.class
 App.class
+greeter/Language.class
+connection/ConnDB.class
