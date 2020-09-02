@@ -1,3 +1,13 @@
 # Spark-Java-Web-App
 
-#### Here is simple Greet app that is built on Java Spark Framework and is deployed on HEROKU
+Technologies used in this app are as followed:
+
+* IntelliJ IDE
+* Java JDK 8
+* Spark Framework
+* PostgreSQL Database
+* JDBC
+* Maven
+* and it wad deployed on HEROKU
+* Depencies:
+..*
