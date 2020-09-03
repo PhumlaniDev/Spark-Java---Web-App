@@ -4,7 +4,10 @@ import org.jdbi.v3.core.Jdbi;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
-
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +16,36 @@ import static spark.Spark.*;
 
 public class App {
 
-    static final String KOANS_DATABASE_URL = "jdbc:postgresql:greetdb";
-    static final String userName = "Phumlani";
-    static final String password = "Christian9432";
+    static Jdbi getDatabaseConnectionURL(String defualtJdbcUrl) throws URISyntaxException, SQLException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        String database_url = processBuilder.environment().get("DATABASE_URL");
+        if (database_url != null) {
+
+            URI uri = new URI(database_url);
+            String[] hostParts = uri.getUserInfo().split(":");
+            String username = hostParts[0];
+            String password = hostParts[1];
+            String host = uri.getHost();
+
+            int port = uri.getPort();
+
+            String path = uri.getPath();
+            String url = String.format("jdbc:postgresql://%s:%s%s", host, port, path);
+            return Jdbi.create(url, username, password);
+        }
+
+        return Jdbi.create(defualtJdbcUrl);
+
+    }
+
+    static final String KOANS_DATABASE_URL = "jdbc:postgresql:greet?username=macgyver&password=mac123";
 
     public static void main(final String[] args) throws Exception {
         port(getHerokuAssignedPort());
 
-        ConnDB connDB = new ConnDB();
+//        ConnDB connDB = new ConnDB();
 
-        Jdbi jdbi = Jdbi.create(KOANS_DATABASE_URL, userName, password);
+        Jdbi jdbi = getDatabaseConnectionURL(KOANS_DATABASE_URL);
 
         // get a handle to the database
         Handle handle = jdbi.open();
@@ -31,15 +54,12 @@ public class App {
         staticFiles.location("/public"); // Static files
 
         // get all the usernames from the database
-        List<String> users = handle.createQuery("select name from greet")
-                .mapTo(String.class)
-                .list();
+
 
         final Map<String, Object> map = new HashMap<>();
 
 
         get("/", (req, res) -> {
-            connDB.getConnection();
             res.redirect("/hello");
             return null;
         });
@@ -55,8 +75,9 @@ public class App {
 
         get("/hello", (request, response) -> {
 
-            connDB.getConnection();
-
+            List<String> users = handle.createQuery("select name from greet_user")
+                    .mapTo(String.class)
+                    .list();
             // Show something
 
             map.put("users", users);
@@ -66,7 +87,6 @@ public class App {
 
         post("/hello", (request, response) -> {
 
-            connDB.getConnection();
 
             // create the greeting message
             String lang = request.queryParams("language");
@@ -82,7 +102,11 @@ public class App {
             //if the username already exist update the counter using this query
             handle.execute("update greet set counter = counter + 1 where name = ?", username);*/
 
-            System.out.println(connDB.greeter(username) + "has been greeted.");
+            handle.execute("insert into greet_user (name,count) values (?,?)", username, 0);
+
+            List<String> users = handle.createQuery("select name from greet_user")
+                    .mapTo(String.class)
+                    .list();
 
             if (!lang.isEmpty()){
                 switch (lang) {

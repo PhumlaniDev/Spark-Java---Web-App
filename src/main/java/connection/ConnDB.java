@@ -8,10 +8,10 @@ import java.sql.PreparedStatement;
 
 public class ConnDB implements Greetings {
 
-    static final String KOANS_DATABASE_URL = "jdbc:postgresql:greetdb";
+    static final String KOANS_DATABASE_URL = "jdbc:postgresql:greet";
     static final String JDBC_DRIVER = "org.postgresql.Driver";
-    static final String userName = "Phumlani";
-    static final String password = "Christian9432";
+    static final String userName = "macgyver";
+    static final String password = "mac123";
 
     public Connection getConnection() throws Exception {
 
@@ -26,7 +26,7 @@ public class ConnDB implements Greetings {
 
         try {
             //final String CREATE_TABLE_IF_NOT_CREATED = "create table if not exists greet ( id integer identity, name varchar(50), counter int )";
-            final String INSERT_NAME_LANG_SQL = "insert into greet (name,count) values (?,?)";
+            final String INSERT_NAME_LANG_SQL = "insert into greet_user (name,count) values (?,?)";
 
             PreparedStatement addNameLangPreparedStatement = connection.prepareStatement(INSERT_NAME_LANG_SQL);
             addNameLangPreparedStatement.setString(1,name);
