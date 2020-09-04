@@ -95,14 +95,20 @@ public class App {
 
             String greeting = "";
 
+            // check if a user exists
+            int count = handle.select("select count(*) from greet_user where name = ?", username)
+                    .mapTo(int.class)
+                    .findOnly();
 
-            /*//create a user initially with a counter of one
-            handle.execute("insert into greet (name, counter) values (?, 1)", username);
+            if (count == 0){
+                //create a user initially with a counter of one
+                handle.execute("insert into greet_user (name, count) values (?, 1)", username);
+            }
 
-            //if the username already exist update the counter using this query
-            handle.execute("update greet set counter = counter + 1 where name = ?", username);*/
-
-            handle.execute("insert into greet_user (name,count) values (?,?)", username, 0);
+            else{
+                //if the username already exist update the counter using this query
+                handle.execute("update greet_user set count = count + 1 where name = ?", username);
+            }
 
             List<String> users = handle.createQuery("select name from greet_user")
                     .mapTo(String.class)
